@@ -22,8 +22,9 @@ public class PostController {
 
     @GetMapping
     public List<Post> findAll() {
-        log.debug("Текущее количество постов: {}", postService.getPosts().size());
-        return postService.getPosts();
+        List<Post> posts = postService.findAll();
+        log.debug("Текущее количество постов: {}", posts.size());
+        return posts;
     }
 
     @PostMapping

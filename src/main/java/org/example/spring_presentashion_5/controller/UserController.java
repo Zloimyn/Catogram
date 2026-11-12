@@ -5,7 +5,7 @@ import org.example.spring_presentashion_5.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class UserController {
@@ -17,13 +17,13 @@ public class UserController {
     }
 
     @GetMapping("/user/all")
-    public HashMap<String, User> allUsers() {
+    public Map<String, User> allUsers() {
         return userService.allUsers();
     }
 
     @PostMapping("/user/create")
-    public User addUsers(@RequestBody User user) {
-        return userService.addUsers(user);
+    public User addUser(@RequestBody User user) {
+        return userService.addUser(user);
     }
 
     @PutMapping("/user/update")

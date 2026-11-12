@@ -1,22 +1,24 @@
 package org.example.spring_presentashion_5.service;
 
-import org.example.spring_presentashion_5.model.User;
 import org.example.spring_presentashion_5.exception.InvalidEmailException;
 import org.example.spring_presentashion_5.exception.UserAlreadyExistException;
+import org.example.spring_presentashion_5.exception.UserNotFoundException;
+import org.example.spring_presentashion_5.model.User;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class UserService {
-    private final HashMap<String, User> userHashMap = new HashMap<>();
+    private final Map<String, User> userHashMap = new HashMap<>();
 
-    public HashMap<String, User> allUsers() {
-        return userHashMap;
+    public Map<String, User> allUsers() {
+        return new HashMap<>(userHashMap);
     }
 
-    public User addUsers(User user) {
-        if (user == null || user.getEmail() == null || user.getEmail().isEmpty()) {
+    public User addUser(User user) {
+        if (user == null || user.getEmail() == null || user.getEmail().isBlank()) {
             throw new InvalidEmailException("Неверный email");
         }
 
@@ -29,8 +31,11 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        if (user == null || user.getEmail() == null || user.getEmail().isEmpty()) {
+        if (user == null || user.getEmail() == null || user.getEmail().isBlank()) {
             throw new InvalidEmailException("Неверный email");
+        }
+        if (!userHashMap.containsKey(user.getEmail())) {
+            throw new UserNotFoundException("Пользователь не найден");
         }
 
         userHashMap.put(user.getEmail(), user);
