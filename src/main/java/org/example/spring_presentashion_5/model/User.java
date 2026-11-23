@@ -7,10 +7,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 @EqualsAndHashCode
 public class User {
     private final String email;
+
+    @Setter
     private String name;
 
     @JsonCreator
