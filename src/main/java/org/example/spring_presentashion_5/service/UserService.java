@@ -43,12 +43,11 @@ public class UserService {
         }
         validateEmail(user.getEmail());
 
-        if (users.containsKey(user.getEmail())) {
+        User newUser = new User(user);
+        if (users.putIfAbsent(newUser.getEmail(), newUser) != null) {
             throw new UserAlreadyExistException("Такой email уже занят");
         }
 
-        User newUser = new User(user);
-        users.put(newUser.getEmail(), newUser);
         log.info("Добавлен пользователь: {}", newUser.getEmail());
         return new User(newUser);
     }
@@ -82,33 +81,27 @@ public class UserService {
             return new User(existingUser);
         }
 
-        if (users.containsKey(newEmail)) {
+        User updatedUser = new User(newEmail, existingUser.getName());
+        if (users.putIfAbsent(newEmail, updatedUser) != null) {
             throw new UserAlreadyExistException("Такой email уже занят");
         }
 
         users.remove(oldEmail);
-        User updatedUser = new User(newEmail, existingUser.getName());
-        users.put(newEmail, updatedUser);
         eventPublisher.publishEvent(new UserEmailChangedEvent(oldEmail, newEmail));
         log.info("Email пользователя изменен с {} на {}", oldEmail, newEmail);
         return new User(updatedUser);
     }
 
     public User findUserByEmail(String email) {
-        validateEmail(email);
+        if (email == null || email.isBlank()) {
+            return null;
+        }
 
         User user = users.get(email);
         if (user == null) {
-            throw new UserNotFoundException("Пользователь не найден");
+            return null;
         }
         return new User(user);
-    }
-
-    public boolean existsByEmail(String email) {
-        if (email == null || email.isBlank()) {
-            return false;
-        }
-        return users.containsKey(email);
     }
 
     private void validateEmail(String email) {

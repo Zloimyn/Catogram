@@ -50,7 +50,7 @@ public class PostService {
 
         String emailAuthor = post.getAuthor();
 
-        if (!userService.existsByEmail(emailAuthor)) {
+        if (userService.findUserByEmail(emailAuthor) == null) {
             throw new UserNotFoundException("Пользователь " + emailAuthor + " не найден");
         }
 
